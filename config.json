@@ -1,0 +1,15 @@
+{
+  "keycloak": {
+    "url": "http://test5.intranet.terraria.com:8081",
+    "realmName": "RSE",
+    "cliendId" : "RSE",
+    "clientSecret" : "Av1y7GUzrNR3wUi7BwQl7q7ZDBj4FE9s"    
+  },
+  "mail": {
+    "address": "f.ferrari@terraria.com",
+    "smtpServer": "mail2.terraria.com" 
+  },
+  "site": {
+  	"url": "rse.terraria.com"
+  }
+}

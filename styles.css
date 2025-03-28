@@ -1,0 +1,307 @@
+html {
+  font-size: 90% !important;
+}
+
+.nav-sidebar .nav-header:not(:first-of-type) {
+    padding: 1rem 1rem .5rem;
+}
+
+.nav-sidebar .nav-header {
+    padding: 1rem 1rem .5rem;
+}
+
+.nav-item .nav-icon {
+    margin-left: .05rem;
+    font-size: 1.2rem;
+    margin-right: .2rem;
+    text-align: center;
+    width: 1.6rem;
+}
+
+.nav-item .nav-icon.fas {
+    font-size: 1.1rem;
+}
+
+.nav-link:not(.active):hover {
+	background: #E5E5E5;
+    color: #343a40 !important;
+}
+
+div#sidebar_admin.shiny-html-output.shiny-bound-output li.nav-header {
+	padding: 1.7rem 1rem 0.5rem;	
+}
+
+#minValHIAMap-label {
+	width: 30px	!important;
+}
+#maxValHIAMap-label {
+	width: 30px	!important;
+}
+#minValConcMap-label {
+	width: 30px	!important;
+}
+#maxValConcMap-label {
+	width: 30px	!important;
+}
+#minValEmiMap-label {
+	width: 30px	!important;
+}
+#maxValEmiMap-label {
+	width: 30px	!important;
+}
+
+.mapmenu {
+	padding: 5px;
+}
+
+.tab-table {
+	padding: 10px;
+  border: 1px solid rgba(0,0,0,.1);
+  border-radius: 3px;
+  background: white;
+  font-size: 0.9rem;
+}
+
+.tab-header {
+	padding: 10px;
+  border: 1px solid rgba(0,0,0,.1);
+  border-radius: 3px;
+  background: white;
+  margin-bottom: 10px;
+}
+
+
+.disabledText {
+  pointer-events: none; 
+}
+
+.disabledTableCell {
+	min-height: 38px;
+	pointer-events: none; 
+}
+
+.disabledButton {
+    pointer-events: none; 
+    color: rgb(197 200 203) !important;
+    border-color: rgba(197,200,203,1) !important;
+}
+
+.scen-table {
+	white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.shiny-input-container {
+  width: auto !important;
+}
+
+div.form-group.shiny-input-container {
+    /*margin-bottom: 0rem;*/
+}
+
+.pretty.p-default.p-switch.p-fill {
+    margin-right: 0rem;
+}
+
+.dropdown-menu.show {
+  z-index: 3000;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.control-label{
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  text-overflow: ellipsis;
+}
+
+.rt-th-content {
+  white-space: nowrap;
+}
+
+.leaflet-popup-content {
+    font-size: 15px;
+}
+
+.btn-light {
+  border: 1px solid #ced4da !important;
+  border-radius: 0.25rem !important;
+  background-color: #fff;
+}
+
+.btn-bttMap{
+	background-color: #fff;
+	border: 2px solid rgba(0,0,0,0.2);
+}
+
+#mapEmiAbsPanel {
+	top: 79px;
+	right: 30px;
+	z-index: 1000;
+	/*visibility: hidden;*/
+	position: absolute !important;
+  background-color: #fff;	
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px
+	
+}
+
+#mapConcAbsPanel {
+	top: 79px;
+	right: 30px;
+	z-index: 1000;
+	/*visibility: hidden;*/
+	position: absolute !important;
+  background-color: #fff;	
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px
+	
+}
+
+#mapHIAAbsPanel {
+	top: 79px;
+	right: 30px;
+	z-index: 1000;
+	/*visibility: hidden;*/
+	position: absolute !important;
+  background-color: #fff;	
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px
+	
+}
+
+
+.inline label{ 
+	display: table-cell; 
+	text-align: left; 
+	vertical-align: middle; 
+	width: auto;
+	font-size: 0.8rem;
+} 
+
+.inline .form-group{
+	display: table-row;
+}
+
+
+#minValEmiMap {
+	font-size: 0.8rem;
+	padding: 0.2rem;
+  height: 2rem;
+}
+
+#maxValEmiMap {
+	font-size: 0.8rem;
+	padding: 0.2rem;
+  height: 2rem;
+}
+
+#minValConcMap {
+	font-size: 0.8rem;
+	padding: 0.2rem;
+  height: 2rem;
+}
+
+#maxValConcMap {
+	font-size: 0.8rem;
+	padding: 0.2rem;
+  height: 2rem;
+}
+
+#minValHIAMap {
+	font-size: 0.8rem;
+	padding: 0.2rem;
+  height: 2rem;
+}
+
+#maxValHIAMap {
+	font-size: 0.8rem;
+	padding: 0.2rem;
+  height: 2rem;
+}
+
+
+#knobElement {
+ max-width: 150px; 
+}
+
+#colBox {
+ padding-right: 0px; 
+ padding-left: 0px;
+}
+
+#runScenarioButton {
+  padding-right: 19px; 
+}
+
+#deleteScenarioButton {
+  padding-left: 19px; 
+}
+
+.swal2-popup {
+    transform: scale(0.7);
+}
+
+.dropdown-header {
+  text-align: left;
+}
+
+hr {
+  margin-top: 0rem !important;
+}
+
+.bar-cell {
+  display: flex;
+  align-items: center;
+}
+
+.number {
+  font-family: "Fira Mono", Consolas, Monaco, monospace;
+  font-size: 13.5px;
+  white-space: pre;
+}
+
+.bar-chart {
+  flex-grow: 1;
+  margin-left: 6px;
+  height: 12px;
+}
+
+.bar {
+  height: 100%;
+  transition-property: width;
+  transition-duration: 1s;
+  transition-timing-function: ease;
+  transition-delay: 0s;
+}
+
+#searchTableConcentrations_search {
+  height: calc(2.25rem + 2px);
+}
+
+#searchTableHealth_search {
+  height: calc(2.25rem + 2px);
+}
+
+#searchTableEmissions_search {
+  height: calc(2.25rem + 2px);
+}
+
+#searchTableConcentrations_reset {
+  display: none !important;
+}
+
+#searchTableHealth_reset {
+  display: none !important;
+}
+
+#searchTableEmissions_reset {
+  display: none !important;
+}
