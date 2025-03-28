@@ -1,15 +1,3 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-# TODO:
-# - https://stackoverflow.com/questions/50650616/stream-system-output-to-shiny-front-end-continuously
-
-
 library(shiny)
 library(shinyjs)
 library(shinyFeedback)
