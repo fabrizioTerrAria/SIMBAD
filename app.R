@@ -2852,14 +2852,14 @@ shinyApp(
         observe({
             
           value <- DATASCEN_HEALTH()$SCENARIO_DSCR
-          updateTextInput(inputId = "scenarioDescription", value = value )
+          updateTextInput(inputId = "scenarioDescriptionHealth", value = value )
             
         })
         
         observe({
             
             value <-  DATASCEN_HEALTH()$SCENARIO_NAME
-            updateTextInput(inputId = "scenarioName", value = value)
+            updateTextInput(inputId = "scenarioNameHealth", value = value)
             
         })
         
