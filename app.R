@@ -149,7 +149,7 @@ shinyApp(
                             # column(width = 1),
                             column(width = 12,
                                 fluidRow(
-                                    column(width = 3, pickerInput(inputId = "scenarioChoice",label = "Create or Upload a scenario",width = "100%",choices = NULL)),
+                                    column(width = 3, pickerInput(inputId = "scenarioChoice",label = "Create or load a scenario",width = "100%",choices = NULL)),
                                     column(width = 1, pickerInput(inputId = "scenarioYear",label = "Year",width = "100%",choices = seq(YEAR_STEPS[1],YEAR_STEPS[3]))),
                                     column(width = 3, textInput(inputId = "scenarioName",label = "Scenario name",placeholder = "Insert a scenario name...", width = '100%', value = NULL)),
                                     column(width = 5, textInput(inputId = "scenarioDescription",label = "Scenario description",placeholder = "[Optional] Insert a scenario description...", width = '100%', value = NULL )),
@@ -358,11 +358,10 @@ shinyApp(
                 tabItem(tabName = "emissions",
                         
                         fluidRow(
-                            # column(width = 1),
-                            column(width = 3, uiOutput("scenarioChoiceEmissions")),
-                            column(width = 3, uiOutput("scenarioNameEmissions")),
-                            column(width = 6, uiOutput("scenarioDescriptionEmissions")),
-                            # column(width = 1)
+                          column(width = 3, pickerInput(inputId = "scenarioChoiceEmissions",label = "Load a scenario",width = "100%",choices = NULL)),
+                          column(width = 1, textInput(inputId = "scenarioYearEmissions",label = "Year",width = "100%",value = NULL)),
+                          column(width = 3, textInput(inputId = "scenarioNameEmissions",label = "Scenario name",width = '100%',value = NULL)),
+                          column(width = 5, textInput(inputId = "scenarioDescriptionEmissions",label = "Scenario description",width = '100%',value = NULL )),  
                         ),
                         hr(),
                         fluidRow(
@@ -422,10 +421,6 @@ shinyApp(
                                            column(width = 5, 
                                                   align = 'right',
                                            				fluidRow(
-	                                                  # searchInput(inputId = "searchTableEmissions", placeholder = "Search",
-	                                                  #             btnSearch = icon("search"),
-	                                                  #             btnReset = NULL
-	                                                  # )
                                            					downloadBttn(
                                            						outputId = "downloadTableEmissions",
                                            						label = "Download as CSV",
@@ -488,11 +483,10 @@ shinyApp(
                 tabItem(tabName = "concentrations",
                         
                         fluidRow(
-                            # column(width = 1),
-                            column(width = 3, uiOutput("scenarioChoiceConcentrations")),
-                            column(width = 3, uiOutput("scenarioNameConcentrations")),
-                            column(width = 6, uiOutput("scenarioDescriptionConcentrations")),
-                            # column(width = 1)
+                          column(width = 3, pickerInput(inputId = "scenarioChoiceConcentrations",label = "Load a scenario",width = "100%",choices = NULL)),
+                          column(width = 1, textInput(inputId = "scenarioYearConcentrations",label = "Year",width = "100%",value = NULL)),
+                          column(width = 3, textInput(inputId = "scenarioNameConcentrations",label = "Scenario name",width = '100%',value = NULL)),
+                          column(width = 5, textInput(inputId = "scenarioDescriptionConcentrations",label = "Scenario description",width = '100%',value = NULL )),  
                         ),
                         hr(),
                         fluidRow(
@@ -501,7 +495,7 @@ shinyApp(
                                     inputId = "pollutantChoiceConcentrations",
                                     label = "Choose a specie",
                                     # width = "100%",
-                                    choices = createSpecieNames())
+                                    choices = NULL)
                             ),
                             column(width = 3, 
                                    pickerInput(
@@ -601,11 +595,10 @@ shinyApp(
                 tabItem(tabName = "health",
                         
                         fluidRow(
-                            # column(width = 1),
-                            column(width = 3, uiOutput("scenarioChoiceHealth")),
-                            column(width = 3, uiOutput("scenarioNameHealth")),
-                            column(width = 6, uiOutput("scenarioDescriptionHealth")),
-                            # column(width = 1)
+                          column(width = 3, pickerInput(inputId = "scenarioChoiceHealth",label = "Load a scenario",width = "100%",choices = NULL)),
+                          column(width = 1, textInput(inputId = "scenarioYearHealth",label = "Year",width = "100%",value = NULL)),
+                          column(width = 3, textInput(inputId = "scenarioNameHealth",label = "Scenario name",width = '100%',value = NULL)),
+                          column(width = 5, textInput(inputId = "scenarioDescriptionHealth",label = "Scenario description",width = '100%',value = NULL )),  
                         ),
                         hr(),
                         fluidRow(
@@ -894,7 +887,7 @@ shinyApp(
               inputId = "scenarioChoice",
               choices = list(
                   `-- Create a New scenario --` = c("NoSCEN"),
-                  `Upload scenario` = scenList),
+                  `Load a scenario` = scenList),
               selected = scenario_list$value,
               choicesOpt = list(
                   style = list("font-weight: bold;"),
@@ -1826,14 +1819,12 @@ shinyApp(
         # EMISSIONS
         #######################################################################
         
-        output$scenarioChoiceEmissions <- renderUI({
+        observe({
             
-          pickerInput(
+          updatePickerInput(
               inputId = "scenarioChoiceEmissions",
-              label = "Upload a scenario",
-              width = "100%",
               choices = list(
-                  `Upload scenario` = scenario_list$list),
+                  `Load a scenario` = scenario_list$list),
               selected = scenario_list$value,
               choicesOpt = list(
                   # style = list("color: firebrick !important; font-style: italic;"),
@@ -1850,10 +1841,12 @@ shinyApp(
           
           shinyjs::addClass(id ="scenarioDescriptionEmissions", class = "disabledText")
           shinyjs::addClass(id ="scenarioNameEmissions", class = "disabledText")
+          shinyjs::addClass(id ="scenarioYearEmissions", class = "disabledText")
           
           SCENARIO_NAME <- input$scenarioChoiceEmissions
           SCENARIO_DIR <- file.path(SCENDIR,getScenarioDirectoryInDB(input$scenarioChoiceEmissions))
           SCENARIO_DSCR <- getScenarioDescriptionInDB(input$scenarioChoiceEmissions)
+          SCENARIO_YEAR <- getScenarioYearInDB(input$scenarioChoiceEmissions)
           
           SCENARIO_EMIXRaster = get(load(file.path(SCENARIO_DIR,"emiRaster.rda")))
           SCENARIO_EMIXShp = get(load(file.path(SCENARIO_DIR,"emiShp.rda")))
@@ -1861,24 +1854,31 @@ shinyApp(
           return(list(SCENARIO_NAME = SCENARIO_NAME,
                       SCENARIO_DIR = SCENARIO_DIR,
                       SCENARIO_DSCR = SCENARIO_DSCR,
+                      SCENARIO_YEAR = SCENARIO_YEAR,
                       SCENARIO_EMIXRaster = SCENARIO_EMIXRaster,
                       SCENARIO_EMIXShp = SCENARIO_EMIXShp
           ))
             
         }, ignoreNULL = FALSE)
         
-        output$scenarioDescriptionEmissions <- renderUI({
+        observe({
+          
+          value <- DATASCEN_EMIX()$SCENARIO_YEAR
+          updateTextInput(inputId = "scenarioYearEmissions", value = value )
+          
+        })
+        
+        observe({
             
           value <- DATASCEN_EMIX()$SCENARIO_DSCR
-          # placeholder <- DATASCEN()$SCENARIO_PLCH
-          textInput(inputId = "scenarioDescription",label = "Scenario description",placeholder = "[Optional] Insert a scenario description...", width = '100%', value = value )
+          updateTextInput(inputId = "scenarioDescriptionEmissions", value = value )
             
         })
         
-        output$scenarioNameEmissions <- renderUI({
+        observe({
             
           value <-  DATASCEN_EMIX()$SCENARIO_NAME
-          textInput(inputId = "scenarioName",label = "Scenario name",placeholder = "Insert a scenario name...", width = '100%', value = value)
+          updateTextInput(inputId = "scenarioNameEmissions", value = value)
             
         })
         
@@ -1903,6 +1903,8 @@ shinyApp(
 			      		))) 
         	
         })
+        
+        outputOptions(output, "emissionsMap", suspendWhenHidden = FALSE)
         
         output$minValEmiMapUI <- renderUI({
 	
@@ -2282,14 +2284,12 @@ shinyApp(
         # CONCENTRATIONS
         #######################################################################
         
-        output$scenarioChoiceConcentrations <- renderUI({
+        observe({
             
-          pickerInput(
+          updatePickerInput(
               inputId = "scenarioChoiceConcentrations",
-              label = "Upload a scenario",
-              width = "100%",
               choices = list(
-                  `Upload scenario` = scenario_list$list),
+                  `Load a scenario` = scenario_list$list),
               selected = scenario_list$value,
               choicesOpt = list(
                   # style = c("color: firebrick !important; font-weight: bold;"))
@@ -2307,10 +2307,12 @@ shinyApp(
           
           shinyjs::addClass(id ="scenarioDescriptionConcentrations", class = "disabledText")
           shinyjs::addClass(id ="scenarioNameConcentrations", class = "disabledText")
+          shinyjs::addClass(id ="scenarioYearConcentrations", class = "disabledText")
           
           SCENARIO_NAME <- input$scenarioChoiceConcentrations
           SCENARIO_DIR <- file.path(SCENDIR,getScenarioDirectoryInDB(input$scenarioChoiceConcentrations))
           SCENARIO_DSCR <- getScenarioDescriptionInDB(input$scenarioChoiceConcentrations)
+          SCENARIO_YEAR <- getScenarioYearInDB(input$scenarioChoiceConcentrations)
           
           SCENARIO_CONCRaster = get(load(file.path(SCENARIO_DIR,"concRaster.rda")))
           SCENARIO_CONCShp = get(load(file.path(SCENARIO_DIR,"concShp.rda")))
@@ -2318,25 +2320,52 @@ shinyApp(
           return(list(SCENARIO_NAME = SCENARIO_NAME,
                       SCENARIO_DIR = SCENARIO_DIR,
                       SCENARIO_DSCR = SCENARIO_DSCR,
+                      SCENARIO_YEAR = SCENARIO_YEAR,
                       SCENARIO_CONCRaster = SCENARIO_CONCRaster,
                       SCENARIO_CONCShp = SCENARIO_CONCShp
                       ))
             
         }, ignoreNULL = FALSE)
         
-        output$scenarioDescriptionConcentrations <- renderUI({
+        observe({
+          
+          value <- DATASCEN_CONC()$SCENARIO_YEAR
+          updateTextInput(inputId = "scenarioYearConcentrations", value = value )
+          
+        })
+        
+        observe({
             
           value <- DATASCEN_CONC()$SCENARIO_DSCR
-          # placeholder <- DATASCEN()$SCENARIO_PLCH
-          textInput(inputId = "scenarioDescription",label = "Scenario description",placeholder = "[Optional] Insert a scenario description...", width = '100%', value = value )
+          updateTextInput(inputId = "scenarioDescriptionConcentrations", value = value )
             
         })
         
-        output$scenarioNameConcentrations <- renderUI({
+        observe({
             
           value <-  DATASCEN_CONC()$SCENARIO_NAME
-          textInput(inputId = "scenarioName",label = "Scenario name",placeholder = "Insert a scenario name...", width = '100%', value = value)
+          updateTextInput(inputId = "scenarioNameConcentrations", value = value)
             
+        })
+        
+        
+        observe({
+          
+          req(input$scenarioChoiceConcentrations)
+          
+          if (isDailyComputationScenarioInDB(input$scenarioChoiceConcentrations)) {
+            withDailyStats <- TRUE
+          } else {
+            withDailyStats <- FALSE
+          }
+          
+          listOfSpecies <- createSpecieNames(withDailyStats)
+          
+          updatePickerInput(
+            inputId = "pollutantChoiceConcentrations",
+            choices = listOfSpecies
+          )
+          
         })
         
         observe({
@@ -2408,6 +2437,8 @@ shinyApp(
         			))) 
         	
         })
+        
+        outputOptions(output, "concentrationsMap", suspendWhenHidden = FALSE)
         
         output$minValConcMapUI <- renderUI({
         	
@@ -2586,7 +2617,9 @@ shinyApp(
         
 
         observe({
-            
+              
+            req(input$pollutantChoiceConcentrations)
+          
             units <- getSpecieUnit(input$pollutantChoiceConcentrations)
             poll <- input$pollutantChoiceConcentrations
             
@@ -2630,7 +2663,9 @@ shinyApp(
         }) 
         
         observe({
-            
+          
+          req(input$pollutantChoiceConcentrations)
+          
           click <- input$concentrationsMap_click
           units <- getSpecieUnit(input$pollutantChoiceConcentrations)
           poll <- input$pollutantChoiceConcentrations
@@ -2764,14 +2799,12 @@ shinyApp(
         # HEALTH
         #######################################################################
         
-        output$scenarioChoiceHealth <- renderUI({
+        observe({
             
-          pickerInput(
+          updatePickerInput(
               inputId = "scenarioChoiceHealth",
-              label = "Upload a scenario",
-              width = "100%",
               choices = list(
-                  `Upload scenario` = scenario_list$list),
+                  `Load a scenario` = scenario_list$list),
               selected = scenario_list$value,
               choicesOpt = list(
                   # style = c("color: firebrick !important; font-weight: bold;"))
@@ -2789,36 +2822,44 @@ shinyApp(
           
           shinyjs::addClass(id ="scenarioDescriptionHealth", class = "disabledText")
           shinyjs::addClass(id ="scenarioNameHealth", class = "disabledText")
+          shinyjs::addClass(id ="scenarioYearHealth", class = "disabledText")
           
           SCENARIO_NAME <- input$scenarioChoiceHealth
           SCENARIO_DIR <- file.path(SCENDIR,getScenarioDirectoryInDB(input$scenarioChoiceHealth))
           SCENARIO_DSCR <- getScenarioDescriptionInDB(input$scenarioChoiceHealth)
+          SCENARIO_YEAR <- getScenarioYearInDB(input$scenarioChoiceHealth)
           
           SCENARIO_HIARaster = get(load(file.path(SCENARIO_DIR,"hiaRaster.rda")))
           SCENARIO_HIAShp = get(load(file.path(SCENARIO_DIR,"hiaShp.rda")))
-          # SCENARIO_CONCShp = get(load(paste0(SCENARIO_DIR,"/","concShp.rda")))
-          
+
           return(list(SCENARIO_NAME = SCENARIO_NAME,
                       SCENARIO_DIR = SCENARIO_DIR,
                       SCENARIO_DSCR = SCENARIO_DSCR,
+                      SCENARIO_YEAR = SCENARIO_YEAR,
                       SCENARIO_HIARaster = SCENARIO_HIARaster,
                       SCENARIO_HIAShp = SCENARIO_HIAShp
-                      # SCENARIO_CONCShp = SCENARIO_CONCShp
           ))
             
         }, ignoreNULL = FALSE)
         
-        output$scenarioDescriptionHealth <- renderUI({
+        observe({
+          
+          value <- DATASCEN_HEALTH()$SCENARIO_YEAR
+          updateTextInput(inputId = "scenarioYearHealth", value = value )
+          
+        })
+        
+        observe({
             
           value <- DATASCEN_HEALTH()$SCENARIO_DSCR
-          textInput(inputId = "scenarioDescription",label = "Scenario description",placeholder = "[Optional] Insert a scenario description...", width = '100%', value = value )
+          updateTextInput(inputId = "scenarioDescription", value = value )
             
         })
         
-        output$scenarioNameHealth <- renderUI({
+        observe({
             
             value <-  DATASCEN_HEALTH()$SCENARIO_NAME
-            textInput(inputId = "scenarioName",label = "Scenario name",placeholder = "Insert a scenario name...", width = '100%', value = value)
+            updateTextInput(inputId = "scenarioName", value = value)
             
         })
         
@@ -2842,6 +2883,8 @@ shinyApp(
         			))) 
         	
         })
+        
+        outputOptions(output, "healthMap", suspendWhenHidden = FALSE)
         
         output$minValHIAMapUI <- renderUI({
         	

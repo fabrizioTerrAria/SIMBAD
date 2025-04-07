@@ -12,17 +12,25 @@ library(jsonlite)
 
 `%!in%` <- Negate(`%in%`)
 
-createSpecieNames <- function() {
+createSpecieNames <- function(withDailyStats) {
   
   listNames <- c()
   for (i in 1:length(SPECIES_DESC)) {
     
-    for (j in 1:length(SPECIES_STATS[[i]])) {
+    if (withDailyStats) {
       
-      varName <- paste(SPECIES_DESC[i], SPECIES_STATS[[i]][j])
-      listNames <- c(listNames, varName)  
+      for (j in 1:length(SPECIES_STATS[[i]])) {
+        varName <- paste(SPECIES_DESC[i], SPECIES_STATS[[i]][j])
+      }
+      
+    } else {
+      
+      # tengo solo la media annua
+      varName <- paste(SPECIES_DESC[i], SPECIES_STATS[[i]][1])
       
     }
+    
+    listNames <- c(listNames, varName)  
     
   }
   
@@ -67,7 +75,13 @@ getStat <- function(specieName) {
 
 getSpecieUnit <- function(specieName) {
   
-  unit <- unlist(SPECIES_UNIT)[match(specieName, createSpecieNames())]
+  if (getStat(specieName) == "# daily exceed") {
+    unit <- "# of days exceed"
+  } else {
+    unit <- "[\u00b5g/m\u00b3]"
+  }
+  
+  # unit <- unlist(SPECIES_UNIT)[match(specieName, createSpecieNames(withDailyStats))]
   return(unit)
   
 }
