@@ -934,7 +934,10 @@ computeBaseYearConcentrations <- function(scenario,baseYear,redPerc,setProgress,
 		
 	  # leggo il file base 100
 	  var.name <- SPECIES[n]
-	  base100 <- readCAMXfile(base100.year.fileNames[[concIndex]][1], var.name)
+	  base100 <- readCAMXfile(base100.year.fileNames[[concIndex]], var.name)
+	  
+	  # leggo il file scenario al 50%
+	  scen50 <- readCAMXfile(scen50.year.fileNames[[1]], var.name)
 	  
 		Nsec <- length(SECTORS_ID)-1
 		Npre <- length(SPECIES_PREC[[n]])
@@ -957,17 +960,9 @@ computeBaseYearConcentrations <- function(scenario,baseYear,redPerc,setProgress,
 			
 			for (j in 1:Nsec) {
 				
-			  # leggo il file base 100
-			  var.name <- SPECIES[n]
-			  base100 <- readCAMXfile(base100.year.fileNames[[concIndex]][j], var.name)
-			  
-			  # leggo il file scenario al 50%
-			  scen50 <- readCAMXfile(scen50.year.fileNames[[1]][j], var.name)
-			  
 			  print(paste0(Sys.time(), "  + Sector: ", SECTORS_ID[j]))
 			  
 			  var.name <- paste(SPECIES[n],SECTORS_ID[j],"ITA",PRECURSORS[i], sep = "_")
-			  
 			  
 			  # leggo il ddm al 50% del file base 100
 			  base100.ddm50 <- readCAMXfile(base100.ddm50.year.fileNames[[1]][j], var.name)
@@ -1109,10 +1104,10 @@ computeBaseYearConcentrationsDaily <- function(scenario,baseYear,redPerc,setProg
     
     # leggo il file base 100
     var.name <- SPECIES[n]
-    base100 <- readCAMXfileDaily(base100.dly.fileNames[[concIndex]][1], var.name)
+    base100 <- readCAMXfileDaily(base100.dly.fileNames[[concIndex]], var.name)
     
     # leggo il file scenario al 50%
-    # scen50 <- readCAMXfileDaily(scen50.fileName, var.name)
+    scen50 <- readCAMXfileDaily(scen50.dly.fileNames[[1]], var.name)
     
     Nsec <- length(SECTORS_ID)-1
     Npre <- length(SPECIES_PREC[[n]])
@@ -1134,13 +1129,6 @@ computeBaseYearConcentrationsDaily <- function(scenario,baseYear,redPerc,setProg
       print(paste0(Sys.time(), " - Precursor: ", PRECURSORS[i]))
       
       for (j in 1:Nsec) {
-        
-        # leggo il file base 100
-        var.name <- SPECIES[n]
-        base100 <- readCAMXfileDaily(base100.dly.fileNames[[concIndex]][j], var.name)
-        
-        # leggo il file scenario al 50%
-        scen50 <- readCAMXfileDaily(scen50.dly.fileNames[[1]][j], var.name)
         
         print(paste0(Sys.time(), "  + Sector: ", SECTORS_ID[j]))
         

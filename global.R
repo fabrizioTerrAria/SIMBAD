@@ -19,31 +19,27 @@ PRECURSORS <- c("NOX","VOC","SO2","NH3","PP25","PPCO")
 PRECURSORS_DESC <- c("NO\u2093","VOC","SO\u2082","NH\u2083","PM2.5","PM coarse")
 PRECURSORS_UNIT <- c("kmol","kmol","kmol","kmol","ton","ton")
 PRECURSORS_SPEC <- list(c("NO","NO2"),
-												c("NASN","PAR","OLE","TOL","XYL","FORM","ALD2","ETH","ISOP","MEOH","ETOH","ETHA","CH4","IOLE","ALDX","TERP","NR"),
-												c("SO2"),
-												c("NH3"),
-												c("PSO4","PNO3","PNH4","NA","PCL","PEC","POA","FCRS","FPRM"),
-												c("CCRS","CPRM")
-											 )
+						c("NASN","PAR","OLE","TOL","XYL","FORM","ALD2","ETH","ISOP","MEOH","ETOH","ETHA","CH4","IOLE","ALDX","TERP","NR"),
+						c("SO2"),
+						c("NH3"),
+						c("PSO4","PNO3","PNH4","NA","PCL","PEC","POA","FCRS","FPRM"),
+						c("CCRS","CPRM"))
 PRECURSORS_MOLWT <- list(c(30,46.0),
-												 c(128,16,32,112,128,16,32,32,80,16,32,32,16,64,32,160,16),
-												 64.0,
-												 17.0,
-												 c(1,1,1,1,1,1,1,1,1),
-												 c(1,1)
-)
-
+						 c(128,16,32,112,128,16,32,32,80,16,32,32,16,64,32,160,16),
+						 64.0,
+						 7.0,
+						 c(1,1,1,1,1,1,1,1,1),
+						 c(1,1))
 
 # CONCENTRATIONS
 SPECIES <- c("NO2","SO2","NH3","PEC","PM25","PM10")
 SPECIES_PREC <- list(c("NOX","VOC","SO2","NH3"),
-										 c("NOX","VOC","SO2","NH3"),
-										 c("NOX","VOC","SO2","NH3"),
-										 c("PP25"),
-										 c("NOX","VOC","SO2","NH3","PP25"),
-										 c("NOX","VOC","SO2","NH3","PP25","PPCO")
-										 
-)
+					 c("NOX","VOC","SO2","NH3"),
+					 c("NOX","VOC","SO2","NH3"),
+					 c("PP25"),
+					 c("NOX","VOC","SO2","NH3","PP25"),
+					 c("NOX","VOC","SO2","NH3","PP25","PPCO"))
+
 SPECIES_DESC <- c("NO\u2082","SO\u2082","NH\u2083","PEC","PM2.5","PM10")
 SPECIES_UNIT <- c("[\u00b5g/m\u00b3]","[\u00b5g/m\u00b3]","[\u00b5g/m\u00b3]","[\u00b5g/m\u00b3]","[\u00b5g/m\u00b3]","[\u00b5g/m\u00b3]")
 
@@ -68,8 +64,7 @@ SECTORS_DESC <- c("MS02 - Residential combustion with biomass",
                   "MS01 - Energy Production",
                   "MS03.04 - Industrial sources",
                   "MS10 - Agriculture",
-                  "Others"
-)
+                  "Others")
 
 
 # HEALTH
@@ -89,7 +84,6 @@ EMIXDIR <- file.path(DATAPATH,"EMIX")
 HIADIR <- file.path(DATAPATH,"CODE_HIA")
 TEMPLATESDIR <- file.path(DATAPATH,"TEMPLATES")
 USERGUIDEDIR <- file.path(DATAPATH,"USERGUIDE")
-SIMBADDB <- file.path(DATAPATH,"simbad.duckdb")
 
 
 YEAR_STEPS <- c(2017,2030,2050)
@@ -98,65 +92,52 @@ YEAR_STEPS <- c(2017,2030,2050)
 
 base100.dly.fileNames <- list(
   ## 2017
-  c(
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_24_2017_base_ddm_10agr_p50.avrg.year.dly.grd01.2d.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_24_2017_base_ddm_10agr_p50.avrg.year.dly.grd01.2d.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_24_2017_base_ddm_10agr_p50.avrg.year.dly.grd01.2d.nc"),  
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_24_2017_base_ddm_10agr_p50.avrg.year.dly.grd01.2d.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_24_2017_base_ddm_10agr_p50.avrg.year.dly.grd01.2d.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_19_2017_base_ddm_03040506ind_p50.avrg.grd01.dly.nc")
-    ),
+  file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_31_2017_base_ddm_01e02b07t_p50.avrg.year.grd01.dayavg.nc"),
   ## 2030
-  c(
-    NA,
-    NA,
-    NA,  
-    NA,
-    NA,
-    NA
-  ),
+  file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.avrg.year.grd01.dayavg.nc"),
   ## 2050
-  c(
-    NA,
-    NA,
-    NA,  
-    NA,
-    NA,
-    NA
-  )
+  ##################################### DA INSERIRE 2050
+  file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[3],NA)
 )
   
 
 base100.ddm50.dly.fileNames <- list(
   ## 2017
-  c(file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_11_2017_base_ddm_02r07t_p50.ddm.dly.grd01.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_11_2017_base_ddm_02r07t_p50.ddm.dly.grd01.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_11_2017_base_ddm_02r07t_p50.ddm.dly.grd01.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_10_2017_base_ddm_01e_p100.ddm.dly.grd01.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_24_2017_base_ddm_10agr_p50.ddm.year.dly.grd01.2d.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_19_2017_base_ddm_03040506ind_p50.ddm.dly.grd01.nc")
-    )
+  c(file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_31_2017_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.RHB.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_32_2017_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.RHN.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_31_2017_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.TRA.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_31_2017_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.ENE.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_32_2017_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.IND.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_32_2017_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.AGR.nc")
+    ),
+  ## 2030
+  c(
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.RHB.nc"),
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.RHN.nc"),
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.TRA.nc"),  
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.ENE.nc"),
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.IND.nc"),
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.AGR.nc")
+  ),
+  ## 2050
+  c(
+  ##################################### DA INSERIRE 2050 
+  )
 )
 
 scen50.dly.fileNames <- list(
   ## 2017
-  c(file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_25_2017_sce50_02r07t10a_ddm_10agr_p50.avrg.year.dly.grd01.2d.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_25_2017_sce50_02r07t10a_ddm_10agr_p50.avrg.year.dly.grd01.2d.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_25_2017_sce50_02r07t10a_ddm_10agr_p50.avrg.year.dly.grd01.2d.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_25_2017_sce50_02r07t10a_ddm_10agr_p50.avrg.year.dly.grd01.2d.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_25_2017_sce50_02r07t10a_ddm_10agr_p50.avrg.year.dly.grd01.2d.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_20_2017_sce50_03040506ind_ddm_03040506ind_p50.avrg.grd01.dly.nc")
-    )
+  file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_33_2017_sce50_01e02b07t_ddm_01e02b07t_p50.avrg.year.grd01.dayavg.nc")
 )
 
 scen50.ddm50.dly.fileNames <- list(
   ## 2017
-  c(file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_12_2017_sce50_02r07t_ddm_02r07t_p50.ddm.dly.grd01.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_12_2017_sce50_02r07t_ddm_02r07t_p50.ddm.dly.grd01.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_12_2017_sce50_02r07t_ddm_02r07t_p50.ddm.dly.grd01.nc"),
-    NA,
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_25_2017_sce50_02r07t10a_ddm_10agr_p50.ddm.year.dly.grd01.2d.nc"),
-    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_20_2017_sce50_03040506ind_ddm_03040506ind_p50.ddm.dly.grd01.nc")
+  c(file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_33_2017_sce50_01e02b07t_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.RHB.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_34_2017_sce50_02n0304i10a_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.RHN.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_33_2017_sce50_01e02b07t_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.TRA.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_33_2017_sce50_01e02b07t_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.ENE.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_34_2017_sce50_02n0304i10a_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.IND.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[1],"modea_34_2017_sce50_02n0304i10a_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.AGR.nc")
     )
 )
 
@@ -165,32 +146,11 @@ scen50.ddm50.dly.fileNames <- list(
 
 base100.year.fileNames <- list(
   ## 2017
-  c(
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_31_2017_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_32_2017_base_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_31_2017_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_31_2017_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_32_2017_base_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_32_2017_base_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc")
-    ),
+  file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_31_2017_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),
   ## 2030
-  c(
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),  
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc")
-  ),
+  file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc"),
   ## 2050
-  c(
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_37_2050_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_38_2050_base_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_37_2050_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),  
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_37_2050_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_38_2050_base_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_38_2050_base_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc")
-  )
+  file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_37_2050_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc")
 )
   
 
@@ -203,19 +163,30 @@ base100.ddm50.year.fileNames <- list(
     file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_31_2017_base_ddm_01e02b07t_p50.ddm.year.avg.grd01.ENE.nc"),
     file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_32_2017_base_ddm_02n0304i10a_p50.ddm.year.avg.grd01.IND.nc"),
     file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_32_2017_base_ddm_02n0304i10a_p50.ddm.year.avg.grd01.AGR.nc")
-    )
+    ),
+  ## 2030
+  c(
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.ddm.year.avg.grd01.RHB.nc"),
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.ddm.year.avg.grd01.RHN.nc"),
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.ddm.year.avg.grd01.TRA.nc"),  
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.ddm.year.avg.grd01.ENE.nc"),
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.ddm.year.avg.grd01.IND.nc"),
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.ddm.year.avg.grd01.AGR.nc")
+  ),
+  ## 2050
+  c(
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_37_2050_base_ddm_01e02b07t_p50.ddm.year.avg.grd01.RHB.nc"),
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_38_2050_base_ddm_02n0304i10a_p50.ddm.year.avg.grd01.RHN.nc"),
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_37_2050_base_ddm_01e02b07t_p50.ddm.year.avg.grd01.TRA.nc"),  
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_37_2050_base_ddm_01e02b07t_p50.ddm.year.avg.grd01.ENE.nc"),
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_38_2050_base_ddm_02n0304i10a_p50.ddm.year.avg.grd01.IND.nc"),
+    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_38_2050_base_ddm_02n0304i10a_p50.ddm.year.avg.grd01.AGR.nc")
+  )
 )
 
 scen50.year.fileNames <- list(
   ## 2017
-  c(
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_33_2017_sce50_01e02b07t_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_34_2017_sce50_02n0304i10a_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_33_2017_sce50_01e02b07t_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_33_2017_sce50_01e02b07t_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_34_2017_sce50_02n0304i10a_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_34_2017_sce50_02n0304i10a_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc")
-  )
+  file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_33_2017_sce50_01e02b07t_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc")
 )
 
 scen50.ddm50.year.fileNames <- list(
