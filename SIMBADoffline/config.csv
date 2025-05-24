@@ -1,0 +1,3 @@
+nameScenario;year;Type;reductionsFile;dailyComputation;updateBAU;reductionsBAUFile
+TEST_year2017;2017;2;input/SCE120_01E02R07T.csv;FALSE;FALSE;NA
+TEST_year2030;2030;2;input/SCE120_01E02R07T.csv;FALSE;FALSE;NA

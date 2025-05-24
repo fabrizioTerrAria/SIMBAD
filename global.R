@@ -48,7 +48,7 @@ SPECIES_STATS <- list(c("yearly avg"),
                       c("yearly avg"),
                       c("yearly avg"),
                       c("yearly avg"),
-                      c("yearly avg","# daily exeed"))
+                      c("yearly avg","# daily exceed"))
 
 SPECIES_DLY_LIMITS <- c(NA,125,NA,NA,NA,50)
 
@@ -112,12 +112,12 @@ base100.ddm50.dly.fileNames <- list(
     ),
   ## 2030
   c(
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.RHB.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.RHN.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.TRA.nc"),  
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.ENE.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.IND.nc"),
-    file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.AGR.nc")
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.RHB.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.RHN.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.TRA.nc"),  
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.ENE.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.IND.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.AGR.nc")
   ),
   ## 2050
   c(

@@ -2378,7 +2378,7 @@ shinyApp(
             
             updatePickerInput(
               inputId = "deltaChoiceConcentrations",
-              choices = DELTA_ABS_CHOICHES[1]
+              choices = DELTA_ABS_CHOICHES[1:3]
             )
             
           } else {
@@ -2398,21 +2398,21 @@ shinyApp(
           
           # se ho i superamenti ho solo le mappe comunali e grigliate
           
-          if (getStat(input$pollutantChoiceConcentrations) == "# daily exceed") {
-            
-            updatePickerInput(
-              inputId = "aggregationChoiceConcentrations",
-              choices = SPATIAL_AGGREGATION_CHOICES[3:4]
-            )
-            
-          } else {
+          # if (getStat(input$pollutantChoiceConcentrations) == "# daily exceed") {
+          #   
+          #   updatePickerInput(
+          #     inputId = "aggregationChoiceConcentrations",
+          #     choices = SPATIAL_AGGREGATION_CHOICES[3:4]
+          #   )
+          #   
+          # } else {
             
             updatePickerInput(
               inputId = "aggregationChoiceConcentrations",
               choices = SPATIAL_AGGREGATION_CHOICES
             )
             
-          }
+          # }
           
         })
         

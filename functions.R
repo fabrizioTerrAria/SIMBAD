@@ -21,16 +21,18 @@ createSpecieNames <- function(withDailyStats) {
       
       for (j in 1:length(SPECIES_STATS[[i]])) {
         varName <- paste(SPECIES_DESC[i], SPECIES_STATS[[i]][j])
+        listNames <- c(listNames, varName) 
       }
       
     } else {
       
       # tengo solo la media annua
       varName <- paste(SPECIES_DESC[i], SPECIES_STATS[[i]][1])
+      listNames <- c(listNames, varName) 
       
     }
     
-    listNames <- c(listNames, varName)  
+     
     
   }
   
@@ -125,13 +127,15 @@ nearestFutureYear <- function(year) {
 
 computeBAUScenario <- function(year,dailyComputation,setProgress,progressStart,progressEnd) {
   
+  print(paste0(Sys.time(), " - Lancio computeBAUScenario per lo scenario'anno: ", year))
+  
   A <- nearestPastYear(year)
   B <- nearestFutureYear(year)
   
   tau <- (year - A)/(B - A)
   
   redPerc <- matrix(0, nrow = length(PRECURSORS), ncol = length(SECTORS_ID))
-  scenario <- "test"
+  scenario <- paste0("BAU_",year)
   
   emiBaseE <- computeBaseYearEmissions(scenario,A,redPerc,FALSE,0,0)
   emiBaseF <- computeBaseYearEmissions(scenario,B,redPerc,FALSE,0,0)
@@ -220,47 +224,70 @@ computeBAUScenario <- function(year,dailyComputation,setProgress,progressStart,p
   redPercP[is.na(redPercP)] <- 0
   redPercQ[is.na(redPercQ)] <- 0
   
+  concScen <- stack()
+  
   if (dailyComputation) {
     
     concBaseP <- computeBaseYearConcentrationsDaily(scenario,A,redPercP,FALSE,0,0)
     concBaseQ <- computeBaseYearConcentrationsDaily(scenario,B,redPercQ,FALSE,0,0)
     
-    redPerc <- matrix(0, nrow = length(PRECURSORS), ncol = length(SECTORS_ID))
-    concBaseREF <- computeBaseYearConcentrationsDaily(scenario,YEAR_STEPS[1],redPerc,FALSE,0,0)
+    # redPerc <- matrix(0, nrow = length(PRECURSORS), ncol = length(SECTORS_ID))
     
+    # if (A != YEAR_STEPS[1]) {
+    #   concBaseREF <- computeBaseYearConcentrationsDaily(scenario,YEAR_STEPS[1],redPerc,FALSE,0,0)
+    # } else {
+    #   concBaseREF <- concBaseP
+    # }
+    
+    for (n in 1:length(SPECIES)) {
+      
+      var.name <- paste0(SPECIES[n],"_day",1:365)
+      
+      finalConc <- (1 - tau) * concBaseP[[var.name]] + tau * concBaseQ[[var.name]]
+      names(finalConc) <- paste0(SPECIES[n],"_day",1:nlayers(finalConc))
+      
+      concScen <- addLayer(concScen, finalConc)
+
+    }
+
   } else {
     
     concBaseP <- computeBaseYearConcentrations(scenario,A,redPercP,FALSE,0,0)
     concBaseQ <- computeBaseYearConcentrations(scenario,B,redPercQ,FALSE,0,0)
     
-    redPerc <- matrix(0, nrow = length(PRECURSORS), ncol = length(SECTORS_ID))
-    concBaseREF <- computeBaseYearConcentrations(scenario,YEAR_STEPS[1],redPerc,FALSE,0,0)
+    # redPerc <- matrix(0, nrow = length(PRECURSORS), ncol = length(SECTORS_ID))
+    
+    # if (A != YEAR_STEPS[1]) {
+    #   concBaseREF <- computeBaseYearConcentrations(scenario,YEAR_STEPS[1],redPerc,FALSE,0,0)
+    # } else {
+    #   concBaseREF <- concBaseP
+    # }
+    
+    for (n in 1:length(SPECIES)) {
+      
+      var.name <- SPECIES[n]
+      
+      finalConc <- (1 - tau) * concBaseP[[var.name]] + tau * concBaseQ[[var.name]]
+      # deltaConc <- -(concBaseREF[[var.name]] - finalConc)
+      # deltaPerc <- deltaConc / concBaseREF[[var.name]] * 100
+      # deltaPerc[deltaPerc == Inf] <- 0 
+      names(finalConc) <- paste0(SPECIES[[n]],"_day",rep(1:nlayers(finalConc)))
+      
+      concScen <- addLayer(concScen, finalConc)
+      # delta <- addLayer(delta, deltaConc)
+      # deltaP <- addLayer(deltaP, deltaConc)
+      
+      
+    }
     
   }
-  
-  final <- stack()
-  delta <- stack()
-  deltaP <- stack()
-  
-  for (n in 1:length(SPECIES)) {
-    
-    var.name <- SPECIES[[n]]
-    
-    finalConc <- (1 - tau) * concBaseP[[var.name]] + tau * concBaseQ[[var.name]]
-    deltaConc <- -(concBaseREF[[var.name]] - finalConc)
-    deltaPerc <- deltaConc / concBaseREF[[var.name]] * 100
-    deltaPerc[deltaPerc == Inf] <- 0 
-    
-    final <- addLayer(final, finalConc)
-    delta <- addLayer(delta, deltaConc)
-    deltaP <- addLayer(deltaP, deltaConc)
-    
-  }
-  
-  concScen <- addLayer(final, delta, deltaP)
+
+  # concScen <- addLayer(final, delta, deltaP)
+  # concScen <- final
   concScen <- round(concScen, digits = 3)
   
-  names(concScen) <- c(SPECIES,paste0("delta_",SPECIES),paste0("deltaP_",SPECIES))
+  # names(concScen) <- c(SPECIES,paste0("delta_",SPECIES),paste0("deltaP_",SPECIES))
+  # names(concScen) <- SPECIES
   
   return(list(emiScen, concScen, redPercREF, redPercP, redPercQ))
   
@@ -375,7 +402,7 @@ computeScenario <- function(scenario,year,dailyComputation,redPerc,updateBAU,red
       
     } else {
       
-      concBaseBAU <- getConcentrations(scenario,runType)
+      concBaseBAU <- getBAUConcentrations(year,runType)
       
     }
     
@@ -443,12 +470,30 @@ computeScenario <- function(scenario,year,dailyComputation,redPerc,updateBAU,red
     delta <- addLayer(delta, deltaConc)
     deltaP <- addLayer(deltaP, deltaConc)
     
+    names(final)[length(names(final))] <- paste0(SPECIES[n])
+    names(delta)[length(names(delta))] <- paste0("delta_", SPECIES[n])
+    names(deltaP)[length(names(deltaP))] <- paste0("deltaP_",SPECIES[n])
+    
+    if ("# daily exceed" %in% SPECIES_STATS[[n]]) {
+      
+      # calcolo il numero di superamenti giornalieri
+      limit <- SPECIES_DLY_LIMITS[n]
+      finalConcDailyExceed <- apply(final, 1:2, function(x) sum(x > limit, na.rm = TRUE)) ############### DA MODIFICARE
+      
+      # converto la matrice in raster
+      finalConcDailyExceed <- matrix2raster(finalConcDailyExceed) ############### DA MODIFICARE
+      
+      final <- addToStack(finalConcDailyExceed, final)
+      names(final)[length(names(final))] <- paste0(SPECIES[n],"_dylExceed")
+      
+    }
+    
   }
   
   concScen <- addLayer(final, finalBAU, delta, deltaP)
   concScen <- round(concScen, digits = 3)
   
-  names(concScen) <- c(SPECIES,paste0("bau_",SPECIES),paste0("delta_",SPECIES),paste0("deltaP_",SPECIES))
+  # names(concScen) <- c(SPECIES,paste0("bau_",SPECIES),paste0("delta_",SPECIES),paste0("deltaP_",SPECIES))
   
   if (setProgress) {
     
@@ -915,8 +960,8 @@ computeBaseYearConcentrations <- function(scenario,baseYear,redPerc,setProgress,
 	omega50[,4] <- 0
 
 	final <- stack()
-	delta <- stack()
-	deltaP <- stack()
+	# delta <- stack()
+	# deltaP <- stack()
 	
 	concIndex <- match(baseYear,YEAR_STEPS)
 	
@@ -1023,30 +1068,31 @@ computeBaseYearConcentrations <- function(scenario,baseYear,redPerc,setProgress,
 		deltaConc <- -(base100 - finalConc) # Riduzioni con il segno negativo
 		
 		finalConc <- SPECIES_CONV[n] * finalConc
-		deltaConc <- SPECIES_CONV[n] * deltaConc
+		# deltaConc <- SPECIES_CONV[n] * deltaConc
 		
-		deltaPerc <- deltaConc / base100 * 100
-		deltaPerc[deltaPerc == Inf] <- 0 
+		# deltaPerc <- deltaConc / base100 * 100
+		# deltaPerc[deltaPerc == Inf] <- 0 
 		
 		finalConc <- round(finalConc, digits = 2)
-		deltaConc <- round(deltaConc, digits = 2)
-		deltaPerc <- round(deltaPerc, digits = 2)
+		# deltaConc <- round(deltaConc, digits = 2)
+		# deltaPerc <- round(deltaPerc, digits = 2)
 		
 		# converto la matrice in raster
 		finalConc <- matrix2raster(finalConc)
-		deltaConc <- matrix2raster(deltaConc)
-		deltaPerc <- matrix2raster(deltaPerc)
+		# deltaConc <- matrix2raster(deltaConc)
+		# deltaPerc <- matrix2raster(deltaPerc)
 
 		final <- addToStack(finalConc, final)
-		delta <- addToStack(deltaConc, delta)
-		deltaP <- addToStack(deltaPerc, deltaP)
+		# delta <- addToStack(deltaConc, delta)
+		# deltaP <- addToStack(deltaPerc, deltaP)
 		
 	}
 	
-	final <- addLayer(final, delta, deltaP)
+	# final <- addLayer(final, delta, deltaP)
 	final <- round(final, digits = 2)
+	names(final) <- SPECIES
 	
-	names(final) <- c(SPECIES,paste0("delta_",SPECIES),paste0("deltaP_",SPECIES))
+	# names(final) <- c(SPECIES,paste0("delta_",SPECIES),paste0("deltaP_",SPECIES))
 	return(final)
 	
 }
@@ -1085,8 +1131,8 @@ computeBaseYearConcentrationsDaily <- function(scenario,baseYear,redPerc,setProg
   omega50[,4] <- 0
   
   final <- stack()
-  delta <- stack()
-  deltaP <- stack()
+  # delta <- stack()
+  # deltaP <- stack()
   
   concIndex <- match(baseYear,YEAR_STEPS)
   
@@ -1207,63 +1253,70 @@ computeBaseYearConcentrationsDaily <- function(scenario,baseYear,redPerc,setProg
     finalConc[finalConc<0] <- NA
     finalConc[finalConc>1e+6] <- NA
     
-    deltaConc <- -(base100 - finalConc) # Riduzioni con il segno negativo
+    # deltaConc <- -(base100 - finalConc) # Riduzioni con il segno negativo
     
     finalConc <- SPECIES_CONV[n] * finalConc
-    deltaConc <- SPECIES_CONV[n] * deltaConc
+    # deltaConc <- SPECIES_CONV[n] * deltaConc
     
-    deltaPerc <- deltaConc / base100 * 100
-    deltaPerc[deltaPerc == Inf] <- 0 
+    # deltaPerc <- deltaConc / base100 * 100
+    # deltaPerc[deltaPerc == Inf] <- 0 
     
     finalConc <- round(finalConc, digits = 2)
-    deltaConc <- round(deltaConc, digits = 2)
-    deltaPerc <- round(deltaPerc, digits = 2)
+    # deltaConc <- round(deltaConc, digits = 2)
+    # deltaPerc <- round(deltaPerc, digits = 2)
 
     # save(finalConc, file = paste0(outputDir,"/",SPECIES[n],"_daily_finalConc.Rdata"))
     # save(deltaConc, file = paste0(outputDir,"/",SPECIES[n],"_daily_deltaConc.Rdata"))
     # save(deltaPerc, file = paste0(outputDir,"/",SPECIES[n],"_daily_deltaPerc.Rdata"))
     
-    if ("yearly avg" %in% SPECIES_STATS[[n]]) {
-      
-      # calcolo la media annua
-      finalConcYearlyAvg <- rowMeans(finalConc, dims = 2, na.rm = T)
-      deltaConcYearlyAvg <- rowMeans(deltaConc, dims = 2, na.rm = T)
-      deltaPercYearlyAvg <- rowMeans(deltaPerc, dims = 2, na.rm = T)
-      
-      # converto la matrice in raster
-      finalConcYearlyAvg <- matrix2raster(finalConcYearlyAvg)
-      deltaConcYearlyAvg <- matrix2raster(deltaConcYearlyAvg)
-      deltaPercYearlyAvg <- matrix2raster(deltaPercYearlyAvg)
-      
-      final <- addToStack(finalConcYearlyAvg, final)
-      names(final)[length(names(final))] <- SPECIES[n]
-      
-      delta <- addToStack(deltaConcYearlyAvg, delta)
-      names(delta)[length(names(delta))] <- paste0("delta_",SPECIES[n])
-      
-      deltaP <- addToStack(deltaPercYearlyAvg, deltaP)
-      names(deltaP)[length(names(deltaP))] <- paste0("deltaP_",SPECIES[n])
-      
-    }
+    # if ("yearly avg" %in% SPECIES_STATS[[n]]) {
+    #   
+    #   # calcolo la media annua
+    #   finalConcYearlyAvg <- rowMeans(finalConc, dims = 2, na.rm = T)
+    #   deltaConcYearlyAvg <- rowMeans(deltaConc, dims = 2, na.rm = T)
+    #   deltaPercYearlyAvg <- rowMeans(deltaPerc, dims = 2, na.rm = T)
+    #   
+    #   # converto la matrice in raster
+    #   finalConcYearlyAvg <- matrix2raster(finalConcYearlyAvg)
+    #   deltaConcYearlyAvg <- matrix2raster(deltaConcYearlyAvg)
+    #   deltaPercYearlyAvg <- matrix2raster(deltaPercYearlyAvg)
+    #   
+    #   final <- addToStack(finalConcYearlyAvg, final)
+    #   names(final)[length(names(final))] <- SPECIES[n]
+    #   
+    #   delta <- addToStack(deltaConcYearlyAvg, delta)
+    #   names(delta)[length(names(delta))] <- paste0("delta_",SPECIES[n])
+    #   
+    #   deltaP <- addToStack(deltaPercYearlyAvg, deltaP)
+    #   names(deltaP)[length(names(deltaP))] <- paste0("deltaP_",SPECIES[n])
+    #   
+    # }
     
-    if ("# daily exceed" %in% SPECIES_STATS[[n]]) {
-      
-      # calcolo il numero di superamenti giornalieri
-      limit <- SPECIES_DLY_LIMITS[n]
-      finalConcDailyExceed <- apply(finalConc, 1:2, function(x) sum(x > limit, na.rm = TRUE))
-      
-      # converto la matrice in raster
-      finalConcDailyExceed <- matrix2raster(finalConcDailyExceed)
-
-      final <- addToStack(finalConcDailyExceed, final)
-      names(final)[length(names(final))] <- paste0(SPECIES[n],"_dylExceed")
-      
-    }
+    # if ("# daily exceed" %in% SPECIES_STATS[[n]]) {
+    #   
+    #   # calcolo il numero di superamenti giornalieri
+    #   limit <- SPECIES_DLY_LIMITS[n]
+    #   finalConcDailyExceed <- apply(finalConc, 1:2, function(x) sum(x > limit, na.rm = TRUE))
+    #   
+    #   # converto la matrice in raster
+    #   finalConcDailyExceed <- matrix2raster(finalConcDailyExceed)
+    # 
+    #   final <- addToStack(finalConcDailyExceed, final)
+    #   names(final)[length(names(final))] <- paste0(SPECIES[n],"_dylExceed")
+    #   
+    # }
+    
+    finalConc <- round(finalConc, digits = 2)
+    finalConc <- matrix2raster(finalConc)
+    names(finalConc) <- paste0(SPECIES[n],"_day",1:nlayers(finalConc))
+    
+    final <- addToStack(finalConc, final)
 
   }
   
-  final <- addLayer(final, delta, deltaP)
-  final <- round(final, digits = 2)
+  # final <- addLayer(final, delta, deltaP)
+  # final <- round(finalConc, digits = 2)
+  
   
   # names(final) <- c(SPECIES,paste0("delta_",SPECIES),paste0("deltaP_",SPECIES))
   return(final)
@@ -1280,8 +1333,6 @@ raster2matrix <- function(raster) {
 
 matrix2raster <- function(matrix) {
 	
-	r <- flip(raster(t(matrix)))
-	
 	xMin <- -580000
 	xMax <- 556000
 	yMin <- -736000
@@ -1289,10 +1340,35 @@ matrix2raster <- function(matrix) {
 	
 	crs.lcc <- CRS("+proj=lcc +lat_0=41.9 +lon_0=12.6 +lat_1=30 +lat_2=60 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs")
 	
-	extent(r) <- extent(xMin, xMax, yMin, yMax)
-	projection(r) <- crs.lcc
+	if (length(dim(matrix)) == 2) {
+	  
+	  r <- flip(raster(t(matrix)))
 	
-	return(r)
+  	extent(r) <- extent(xMin, xMax, yMin, yMax)
+  	projection(r) <- crs.lcc
+	
+	  return(r)
+  
+	} else if (length(dim(matrix)) == 3) {
+	  
+	  # caso giornaliero
+	  layers <- dim(matrix)[3]
+	  stack_list <- vector("list", layers)
+	  
+	  for (i in 1:layers) {
+	    
+	    r <- flip(raster(t(matrix[,,i])))
+	    
+	    extent(r) <- extent(xMin, xMax, yMin, yMax)
+	    projection(r) <- crs.lcc
+	    
+	    stack_list[[i]] <- r
+	    
+	  }
+	  
+	  return(stack(stack_list))
+	  
+	}
 	
 }
 
@@ -1511,8 +1587,10 @@ interpolateRaster <- function(scenario, rasterStack, fun, type, setProgress, pro
 	} 
 	
 	if (type == "CONC" & length(dailyExceedVarNames) > 0) {
-	  # calcolo il massimo dei superamenti per i comuni
+	  # calcolo il massimo dei superamenti 
 	  export[[1]][,dailyExceedVarNames] <- exact_extract(rasterStack[[dailyExceedVarNames]], shp[[1]], "max", progress = FALSE)
+	  export[[2]][,dailyExceedVarNames] <- exact_extract(rasterStack[[dailyExceedVarNames]], shp[[2]], "max", progress = FALSE)
+	  export[[3]][,dailyExceedVarNames] <- exact_extract(rasterStack[[dailyExceedVarNames]], shp[[3]], "max", progress = FALSE)
 	}
 	
 	
