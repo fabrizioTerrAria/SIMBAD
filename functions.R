@@ -159,7 +159,7 @@ computeBAUScenario <- function(year,dailyComputation,setProgress,progressStart,p
   delta <- stack()
   deltaP <- stack()
   
-  concScen <- stack()
+  # concScen <- stack()
   
   for (i in 1:length(SECTORS_ID)) {
     
@@ -244,6 +244,7 @@ computeBAUScenario <- function(year,dailyComputation,setProgress,progressStart,p
       var.name <- paste0(SPECIES[n],"_day",1:365)
       
       finalConc <- (1 - tau) * concBaseP[[var.name]] + tau * concBaseQ[[var.name]]
+      finalConc <- round(finalConc, digits = 3)
       names(finalConc) <- paste0(SPECIES[n],"_day",1:nlayers(finalConc))
       
       concScen <- addLayer(concScen, finalConc)
@@ -271,8 +272,8 @@ computeBAUScenario <- function(year,dailyComputation,setProgress,progressStart,p
       # deltaConc <- -(concBaseREF[[var.name]] - finalConc)
       # deltaPerc <- deltaConc / concBaseREF[[var.name]] * 100
       # deltaPerc[deltaPerc == Inf] <- 0 
-      names(finalConc) <- paste0(SPECIES[[n]],"_day",rep(1:nlayers(finalConc)))
-      
+      # names(finalConc) <- paste0(SPECIES[[n]],"_day",rep(1:nlayers(finalConc)))
+      finalConc <- round(finalConc, digits = 3)
       concScen <- addLayer(concScen, finalConc)
       # delta <- addLayer(delta, deltaConc)
       # deltaP <- addLayer(deltaP, deltaConc)
@@ -280,11 +281,13 @@ computeBAUScenario <- function(year,dailyComputation,setProgress,progressStart,p
       
     }
     
+    names(concScen) <- SPECIES
+    
   }
 
   # concScen <- addLayer(final, delta, deltaP)
   # concScen <- final
-  concScen <- round(concScen, digits = 3)
+  # concScen <- round(concScen, digits = 3)
   
   # names(concScen) <- c(SPECIES,paste0("delta_",SPECIES),paste0("deltaP_",SPECIES))
   # names(concScen) <- SPECIES
@@ -316,12 +319,12 @@ computeScenario <- function(scenario,year,dailyComputation,redPerc,updateBAU,red
   
   tau <- (year - A)/(B - A)
 
-  emiBaseE <- getBAUEmissions(A,runType)
-  emiBaseF <- getBAUEmissions(B,runType)
+  emiBaseE <- getBAUEmissions(A)
+  emiBaseF <- getBAUEmissions(B)
   emiSCEN <- getEmissions(scenario,runType)
   
   if (A != YEAR_STEPS[1]) {
-    emiBaseREF <- getBAUEmissions(YEAR_STEPS[1],runType)
+    emiBaseREF <- getBAUEmissions(YEAR_STEPS[1])
   } else {
     emiBaseREF <- emiBaseE
   }
@@ -366,7 +369,13 @@ computeScenario <- function(scenario,year,dailyComputation,redPerc,updateBAU,red
   redPercREF[is.na(redPercREF)] <- 0
   redPercP[is.na(redPercP)] <- 0
   redPercQ[is.na(redPercQ)] <- 0
-
+  
+  
+  final <- stack()
+  finalBAU <- stack()
+  delta <- stack()
+  deltaP <- stack()
+  
   if (dailyComputation) {
     
     concBaseP <- computeBaseYearConcentrationsDaily(scenario,A,redPercP,FALSE,0,0)
@@ -387,7 +396,7 @@ computeScenario <- function(scenario,year,dailyComputation,redPerc,updateBAU,red
       
     }
     
-    concBaseREF <- getBAUConcentrations(YEAR_STEPS[1],runType)
+    # concBaseREF <- getBAUConcentrations(YEAR_STEPS[1],dailyComputation)
     
     if (updateBAU) {
       
@@ -402,7 +411,60 @@ computeScenario <- function(scenario,year,dailyComputation,redPerc,updateBAU,red
       
     } else {
       
-      concBaseBAU <- getBAUConcentrations(year,runType)
+      concBaseBAU <- getBAUConcentrations(year,dailyComputation)
+      
+    }
+    
+    
+    
+    for (n in 1:length(SPECIES)) {
+      
+      print(paste0(Sys.time(), " - Calcolo concentrazioni finali per: ", SPECIES[n]))
+      
+      var.name <- paste0(SPECIES[n],"_day",1:365)
+      
+      finalConc <- (1 - tau) * concBaseP[[var.name]] + tau * concBaseQ[[var.name]]
+      finalConcBAU <- concBaseBAU[[var.name]]
+      
+      if ("yearly avg" %in% SPECIES_STATS[[n]]) {
+
+        # calcolo la media annua
+        finalConcYearlyAvg <- calc(finalConc, mean, na.rm = T)
+        finalConcBAUYearlyAvg <- calc(finalConcBAU, mean, na.rm = T)
+        
+        deltaConc <- -(finalConcBAUYearlyAvg - finalConcYearlyAvg)
+        deltaPerc <- deltaConc / finalConcBAUYearlyAvg * 100
+        deltaPerc[deltaPerc == Inf] <- 0
+        
+        final <- addToStack(finalConcYearlyAvg, final)
+        names(final)[length(names(final))] <- SPECIES[n]
+        
+        finalBAU <- addToStack(finalConcBAUYearlyAvg, finalBAU)
+        names(finalBAU)[length(names(finalBAU))] <- paste0("bau_",SPECIES[n])
+
+        delta <- addToStack(deltaConc, delta)
+        names(delta)[length(names(delta))] <- paste0("delta_",SPECIES[n])
+
+        deltaP <- addToStack(deltaPerc, deltaP)
+        names(deltaP)[length(names(deltaP))] <- paste0("deltaP_",SPECIES[n])
+
+      }
+      
+      if ("# daily exceed" %in% SPECIES_STATS[[n]]) {
+
+        # calcolo il numero di superamenti giornalieri
+        limit <- SPECIES_DLY_LIMITS[n]
+        finalConcDailyExceed <- calc(finalConc, function(x) sum(x > limit, na.rm = TRUE))
+
+        final <- addToStack(finalConcDailyExceed, final)
+        names(final)[length(names(final))] <- paste0(SPECIES[n],"_dylExceed")
+        
+        finalBAUConcDailyExceed <- calc(finalConcBAU, function(x) sum(x > limit, na.rm = TRUE))
+        
+        finalBAU <- addToStack(finalBAUConcDailyExceed, finalBAU)
+        names(finalBAU)[length(names(finalBAU))] <- paste0("bau_",SPECIES[n],"_dylExceed")
+
+      }
       
     }
     
@@ -427,7 +489,7 @@ computeScenario <- function(scenario,year,dailyComputation,redPerc,updateBAU,red
       
     }
     
-    concBaseREF <- getBAUConcentrations(YEAR_STEPS[1],runType)
+    # concBaseREF <- getBAUConcentrations(YEAR_STEPS[1],dailyComputation)
     
     if (updateBAU) {
       
@@ -443,53 +505,38 @@ computeScenario <- function(scenario,year,dailyComputation,redPerc,updateBAU,red
       
     } else {
       
-      concBaseBAU <- getBAUConcentrations(year,runType)
+      concBaseBAU <- getBAUConcentrations(year,dailyComputation)
       
     }
     
-  }
-  
-  final <- stack()
-  finalBAU <- stack()
-  delta <- stack()
-  deltaP <- stack()
-  
-  for (n in 1:length(SPECIES)) {
     
-    var.name <- SPECIES[[n]]
-    
-    # riduzioni dello scenario rispetto al BAU
-    finalConc <- (1 - tau) * concBaseP[[var.name]] + tau * concBaseQ[[var.name]]
-    finalConcBAU <- concBaseBAU[[var.name]]
-    deltaConc <- -(finalConcBAU - finalConc)
-    deltaPerc <- deltaConc / concBaseBAU[[var.name]] * 100
-    deltaPerc[deltaPerc == Inf] <- 0 
-    
-    final <- addLayer(final, finalConc)
-    finalBAU <- addLayer(finalBAU, finalConcBAU)
-    delta <- addLayer(delta, deltaConc)
-    deltaP <- addLayer(deltaP, deltaConc)
-    
-    names(final)[length(names(final))] <- paste0(SPECIES[n])
-    names(delta)[length(names(delta))] <- paste0("delta_", SPECIES[n])
-    names(deltaP)[length(names(deltaP))] <- paste0("deltaP_",SPECIES[n])
-    
-    if ("# daily exceed" %in% SPECIES_STATS[[n]]) {
+    for (n in 1:length(SPECIES)) {
       
-      # calcolo il numero di superamenti giornalieri
-      limit <- SPECIES_DLY_LIMITS[n]
-      finalConcDailyExceed <- apply(final, 1:2, function(x) sum(x > limit, na.rm = TRUE)) ############### DA MODIFICARE
+      var.name <- SPECIES[n]
       
-      # converto la matrice in raster
-      finalConcDailyExceed <- matrix2raster(finalConcDailyExceed) ############### DA MODIFICARE
+      # riduzioni dello scenario rispetto al BAU
+      finalConc <- (1 - tau) * concBaseP[[var.name]] + tau * concBaseQ[[var.name]]
+      finalConcBAU <- concBaseBAU[[var.name]]
+      deltaConc <- -(finalConcBAU - finalConc)
+      deltaPerc <- deltaConc / concBaseBAU[[var.name]] * 100
+      deltaPerc[deltaPerc == Inf] <- 0 
       
-      final <- addToStack(finalConcDailyExceed, final)
-      names(final)[length(names(final))] <- paste0(SPECIES[n],"_dylExceed")
+      final <- addLayer(final, finalConc)
+      finalBAU <- addLayer(finalBAU, finalConcBAU)
+      delta <- addLayer(delta, deltaConc)
+      deltaP <- addLayer(deltaP, deltaConc)
+      
+      names(final)[length(names(final))] <- paste0(SPECIES[n])
+      names(finalBAU)[length(names(finalBAU))] <- paste0("bau_", SPECIES[n])
+      names(delta)[length(names(delta))] <- paste0("delta_", SPECIES[n])
+      names(deltaP)[length(names(deltaP))] <- paste0("deltaP_",SPECIES[n])
+      
       
     }
     
+    
   }
-  
+
   concScen <- addLayer(final, finalBAU, delta, deltaP)
   concScen <- round(concScen, digits = 3)
   
@@ -679,13 +726,18 @@ computeEmissionReduction <- function(redPercAct) {
 getEmissions <- function(scenario,runType) {
   
   if (runType == "offline") {
-    directory <- file.path("output",scenario)
+    
+    directory <- file.path("SIMBADoffline/output",scenario)
+    filename <- file.path(directory,"emiRaster.rda")
+    
   } else {
+    
     directory <- getScenarioDirectoryInDB(scenario)
+    filename <- file.path(SCENDIR,directory,"emiRaster.rda")
+    
   }
   
-  filename <- file.path(SCENDIR,directory,"emiRaster.rda")
-  emissionsStack <- get(load(filename))
+  emissionsStack <- base::get(load(filename))
   
   return(emissionsStack)
   
@@ -698,13 +750,9 @@ getBAUScenarioDirectory <- function(year) {
   
 }
 
-getBAUEmissions <- function(year,runType) {
+getBAUEmissions <- function(year) {
   
-  if (runType == "offline") {
-    directory <- file.path("output",paste0(year,"_BAU"))
-  } else {
-    directory <- getBAUScenarioDirectory(year)
-  }
+  directory <- getBAUScenarioDirectory(year)
   
   filename <- file.path(directory,"emiRaster.rda")
   emissionsStack <- get(load(filename))
@@ -713,15 +761,15 @@ getBAUEmissions <- function(year,runType) {
   
 }
 
-getBAUConcentrations <- function(year,runType) {
+getBAUConcentrations <- function(year,dailyComputation) {
   
-  if (runType == "offline") {
-    directory <- file.path("output",paste0(year,"_BAU"))
+  directory <- getBAUScenarioDirectory(year)
+  
+  if (dailyComputation) {
+    filename <- file.path(directory,"concRaster_daily.rda")
   } else {
-    directory <- getBAUScenarioDirectory(year)
+    filename <- file.path(directory,"concRaster.rda")
   }
-  
-  filename <- file.path(directory,"concRaster.rda")
   
   concentrationsStack <- get(load(filename))
   
@@ -892,12 +940,12 @@ computeEmissions <- function(scenario,year,redPerc,updateBAU,redPercBAU,runType,
   
   if (updateBAU) {
     
-    emissionStackREF <- getBAUEmissions(2017,runType)
+    emissionStackREF <- getBAUEmissions(2017)
     emissionStackBAU <- applyRedPercEmissions(emissionStackREF, redPercBAU, "BAU")
     
   } else {
     
-    emissionStackBAU <- getBAUEmissions(year,runType)
+    emissionStackBAU <- getBAUEmissions(year)
     
   }
   
@@ -955,9 +1003,9 @@ computeBaseYearConcentrations <- function(scenario,baseYear,redPerc,setProgress,
 	omega50[red < 50] <- 1
 	
 	# Per il settore 4
-	lambda[,4] <- (red[,4] - 100) / 100
-	omega100[,4] <- 1
-	omega50[,4] <- 0
+	# lambda[,4] <- (red[,4] - 100) / 100
+	# omega100[,4] <- 1
+	# omega50[,4] <- 0
 
 	final <- stack()
 	# delta <- stack()
@@ -1010,20 +1058,11 @@ computeBaseYearConcentrations <- function(scenario,baseYear,redPerc,setProgress,
 			  var.name <- paste(SPECIES[n],SECTORS_ID[j],"ITA",PRECURSORS[i], sep = "_")
 			  
 			  # leggo il ddm al 50% del file base 100
-			  base100.ddm50 <- readCAMXfile(base100.ddm50.year.fileNames[[1]][j], var.name)
+			  base100.ddm50 <- readCAMXfile(base100.ddm50.year.fileNames[[concIndex]][j], var.name)
 			  
 			  # leggo il ddm al 50% dello scenario al 50%
-			  if (is.na(scen50.ddm50.year.fileNames[[1]][j])) {
-			    
-			    scen50.ddm50 <- base100
-			    scen50.ddm50[] <- 0
-			    
-			  } else {
-			    
-			    scen50.ddm50 <- readCAMXfile(scen50.ddm50.year.fileNames[[1]][j], var.name)  
-			    
-			  }
-			   
+		    scen50.ddm50 <- readCAMXfile(scen50.ddm50.year.fileNames[[1]][j], var.name)  
+
         if (concIndex == 1) { 
           s_curr <- (abs(base100.ddm50) + abs(scen50.ddm50)) / 2 
         } else {
@@ -1126,9 +1165,9 @@ computeBaseYearConcentrationsDaily <- function(scenario,baseYear,redPerc,setProg
   omega50[red < 50] <- 1
   
   # Per il settore 4
-  lambda[,4] <- (red[,4] - 100) / 100
-  omega100[,4] <- 1
-  omega50[,4] <- 0
+  # lambda[,4] <- (red[,4] - 100) / 100
+  # omega100[,4] <- 1
+  # omega50[,4] <- 0
   
   final <- stack()
   # delta <- stack()
@@ -1181,20 +1220,11 @@ computeBaseYearConcentrationsDaily <- function(scenario,baseYear,redPerc,setProg
         var.name <- paste(SPECIES[n],SECTORS_ID[j],"ITA",PRECURSORS[i], sep = "_")
         
         # leggo il ddm al 50% del file base 100
-        base100.ddm50 <- readCAMXfileDaily(base100.ddm50.dly.fileNames[[1]][j], var.name)
+        base100.ddm50 <- readCAMXfileDaily(base100.ddm50.dly.fileNames[[concIndex]][j], var.name)
         
         # leggo il ddm al 50% dello scenario al 50%
-        if (is.na(scen50.ddm50.dly.fileNames[[1]][j])) {
-          
-          scen50.ddm50 <- base100
-          scen50.ddm50[] <- 0
-          
-        } else {
-          
-          scen50.ddm50 <- readCAMXfileDaily(scen50.ddm50.dly.fileNames[[1]][j], var.name)  
-          
-        }
-       
+        scen50.ddm50 <- readCAMXfileDaily(scen50.ddm50.dly.fileNames[[1]][j], var.name)  
+
         if ((i == 1) & (j == 1)) {
         	
         	# controllo che nelle celle per l'Italia il ddm non sia maggiore delle concetrazioni di base

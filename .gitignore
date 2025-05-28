@@ -3,6 +3,8 @@
 .RData
 .Ruserdata
 changeLog.txt
+config_real.json
 SIMBAD.Rproj
 _test/
 theme/
+SIMBADoffline/output

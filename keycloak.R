@@ -116,6 +116,17 @@ getListUsers <- function(keycloackUrl,realmName) {
 
 getListUsersWithGroups <- function(keycloackUrl,realmName) {
 	
+  if (keycloackUrl == "") {
+    
+    df_fake <- data.frame(
+      firstName = "Nome",
+      lastName = "Cognome",
+      group = "USER")
+    
+    return(df_fake)
+    
+  }
+  
 	accessToken <- getAccessToken(keycloackUrl,realmName,cliendId,clientSecret)
 	
 	headers = c(

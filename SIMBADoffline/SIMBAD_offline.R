@@ -7,12 +7,12 @@ library(raster)
 source("functions.R")
 source("global.R")
 
-outputPath <- "output"
+outputPath <- "SIMBADoffline/output"
 
 # Reading config.csv file 
 print(paste0(Sys.time()," - Reading config.csv file ..."))
 
-scenarioList <- read.csv2("config.csv")
+scenarioList <- read.csv2("SIMBADoffline/config.csv")
 
 for (scen in 1:nrow(scenarioList)) {
 	
@@ -77,9 +77,9 @@ for (scen in 1:nrow(scenarioList)) {
 	print(paste0(Sys.time(), " - Calcolo Emissioni"))
 	listEMI <- computeEmissions(scenario,year,redPerc,updateBAU,redPercBAU,"offline",FALSE,0,0)
 	
-	emissionsStackBAU <- listEMI[[1]]
-	save(emissionsStackBAU, file = paste0(scenDir,"/","emiRasterBAU.rda"))
-	writeRaster(emissionsStack, filename = paste0(emiDir,"/asc/",names(emissionsStackBAU),"_BAU.asc"), format = "ascii", overwrite = T, prj= T, bylayer = T)
+	# emissionsStackBAU <- listEMI[[1]]
+	# save(emissionsStackBAU, file = paste0(scenDir,"/","emiRasterBAU.rda"))
+	# writeRaster(emissionsStack, filename = paste0(emiDir,"/asc/",names(emissionsStackBAU),"_BAU.asc"), format = "ascii", overwrite = T, prj= T, bylayer = T)
 	
 	emissionsStack <- listEMI[[2]]
 	save(emissionsStack, file = paste0(scenDir,"/","emiRaster.rda"))
@@ -92,7 +92,7 @@ for (scen in 1:nrow(scenarioList)) {
 	
 	# CONCENTRATIONS 
 	print(paste0(Sys.time(), " - Calcolo Concentrazioni"))
-	listCONC <- computeScenario(scenario,year,redPerc,updateBAU,redPercBAU,"offline",FALSE,0,0)
+	listCONC <- computeScenario(scenario,year,dailyComputation,redPerc,updateBAU,redPercBAU,"offline",FALSE,0,0)
 	
 	concentrationsStackBAU <- listCONC[[1]]
 	save(concentrationsStackBAU, file = paste0(scenDir,"/","concRasterBAU.rda"))

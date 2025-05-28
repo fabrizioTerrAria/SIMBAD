@@ -73,13 +73,15 @@ VOLY <- 70000 # Value Of a Life Year lost [euro]
 
 if (Sys.info()['sysname']=="Linux") {
 	DATAPATH <- "/data"
+	CAMXPATH <- "/mnt"
 } else {
 	DATAPATH <- "../data"
+	CAMXPATH <- "../data"
 }
 
 SCENDIR <- file.path(DATAPATH,"SCENARIO")
 BAUSCENDIR <- file.path(DATAPATH,"BAU_SCENARIO")
-CAMXDIR <- file.path(DATAPATH,"CAMX")
+CAMXDIR <- file.path(CAMXPATH,"CAMX")
 EMIXDIR <- file.path(DATAPATH,"EMIX")
 HIADIR <- file.path(DATAPATH,"CODE_HIA")
 TEMPLATESDIR <- file.path(DATAPATH,"TEMPLATES")
@@ -96,8 +98,7 @@ base100.dly.fileNames <- list(
   ## 2030
   file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.avrg.year.grd01.dayavg.nc"),
   ## 2050
-  ##################################### DA INSERIRE 2050
-  file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[3],NA)
+  file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[3],"modea_37_2050_base_ddm_01e02b07t_p50.avrg.year.grd01.dayavg.nc")
 )
   
 
@@ -121,7 +122,12 @@ base100.ddm50.dly.fileNames <- list(
   ),
   ## 2050
   c(
-  ##################################### DA INSERIRE 2050 
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[3],"modea_37_2050_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.RHB.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[3],"modea_38_2050_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.RHN.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[3],"modea_37_2050_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.TRA.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[3],"modea_37_2050_base_ddm_01e02b07t_p50.ddm.year.grd01.dayavg.ENE.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[3],"modea_38_2050_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.IND.nc"),
+    file.path(CAMXDIR,"DAYAVG",YEAR_STEPS[3],"modea_38_2050_base_ddm_02n0304i10a_p50.ddm.year.grd01.dayavg.AGR.nc")
   )
 )
 
@@ -148,7 +154,7 @@ base100.year.fileNames <- list(
   ## 2017
   file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[1],"modea_31_2017_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),
   ## 2030
-  file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_36_2030_base_ddm_02n0304i10a_p50.avrg.year.avg.grd01.nc"),
+  file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[2],"modea_35_2030_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc"),
   ## 2050
   file.path(CAMXDIR,"YEARAVG",YEAR_STEPS[3],"modea_37_2050_base_ddm_01e02b07t_p50.avrg.year.avg.grd01.nc")
 )
@@ -201,12 +207,6 @@ scen50.ddm50.year.fileNames <- list(
   )
 )
 
-
-
-
-
-
-emibase.ar.tot.filename <- paste0(EMIXDIR,"/2017.ar.ita.4km.ttl.nc")
 
 # Emission files. One file per sector
 emibase.ar.filenames <- list(

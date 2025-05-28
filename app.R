@@ -783,8 +783,8 @@ shinyApp(
         	
         } else {
           
-        	username <- "f.ferrari@terraria.com"
-        	usergroup <- "ADMIN"
+        	username <- "test"
+        	usergroup <- "USER"
         	
         }
 				
@@ -2378,7 +2378,7 @@ shinyApp(
             
             updatePickerInput(
               inputId = "deltaChoiceConcentrations",
-              choices = DELTA_ABS_CHOICHES[1:3]
+              choices = DELTA_ABS_CHOICHES[1:2]
             )
             
           } else {
