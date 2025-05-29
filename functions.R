@@ -1564,7 +1564,7 @@ interpolateRaster <- function(scenario, rasterStack, fun, type, setProgress, pro
 		deltaVarNames <- paste0("delta_",SPECIES)
 		deltaPVarNames <- paste0("deltaP_",SPECIES)
 		
-		dailyExceedVarNames <- paste0(SPECIES,"_dylExceed")
+		dailyExceedVarNames <- c(paste0(SPECIES,"_dylExceed"),paste0("bau_",SPECIES,"_dylExceed"))
 		# tengo solo quelli effettivamente presenti nel rasterStack
 		dailyExceedVarNames <- dailyExceedVarNames[dailyExceedVarNames %in% names(rasterStack)]
 		

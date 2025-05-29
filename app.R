@@ -4,16 +4,14 @@ library(shinyFeedback)
 library(bs4Dash)
 library(shinyWidgets)
 library(dplyr)
-library(ipc)
 library(leaflet)
-library(leaflet.extras)
 library(leaflet.extras2)
 library(highcharter)
 library(reactable)
 library(reactablefmtr)
 library(htmltools)
-library(fs)
-library(shinyscreenshot)
+library(sf)
+# library(shinyscreenshot)
 library(password)
 library(sendmailR)
 library(ipc)
@@ -777,7 +775,7 @@ shinyApp(
         
         if (Sys.info()['sysname']=="Linux") {
           
-        	username <- Sys.getenv("SHINYPROXY_USERNAME")
+          username <- session$request$HTTP_X_SP_USERID
         	userList <- getListUsersWithGroups(keycloackUrl,realmName)
         	usergroup <- userList$group[userList$username == username]
         	
@@ -788,8 +786,8 @@ shinyApp(
         	
         }
 				
-        print(paste0(Sys.time(), " - SHINYPROXY_USERNAME: ", Sys.getenv("SHINYPROXY_USERNAME")))
-        print(paste0(Sys.time(), " - SHINYPROXY_USERGROUPS: ", Sys.getenv("SHINYPROXY_USERGROUPS")))
+        # print(paste0(Sys.time(), " - SHINYPROXY_USERNAME: ", Sys.getenv("SHINYPROXY_USERNAME")))
+        # print(paste0(Sys.time(), " - SHINYPROXY_USERGROUPS: ", Sys.getenv("SHINYPROXY_USERGROUPS")))
         
         print(paste0(Sys.time(), " - Login by user: ", username))
         print(paste0(Sys.time(), " - User group: ", usergroup))

@@ -186,7 +186,7 @@ updateProgressScenario <- function() {
   scenList <- list.dirs(path = SCENDIR, full.names = FALSE, recursive = FALSE)
   progressList <- as.numeric(sapply(progressFiles, function(f) read.table(f, col.names = FALSE)))
   
-  scenarioDF$progress[match(scenList,scenarioDF$directory)] <- progressList
+  scenarioDF$progress[na.omit(match(scenList,scenarioDF$directory))] <- progressList
   
   updateDB(scenarioDF)
   
@@ -201,7 +201,7 @@ updateStatusScenario <- function() {
   scenList <- list.dirs(path = SCENDIR, full.names = FALSE, recursive = FALSE)
   statusList <- as.character(sapply(statusFiles, function(f) read.table(f, col.names = FALSE)))
   
-  scenarioDF$status[match(scenList,scenarioDF$directory)] <- statusList
+  scenarioDF$status[na.omit(match(scenList,scenarioDF$directory))] <- statusList
   
   updateDB(scenarioDF)
   
